@@ -44,7 +44,12 @@ func (s *TransactionSrc) CreateTransaction(transaction models.TransactionRequest
 		return fmt.Errorf("account currency %w is differrent from transaction currency %w", account.Currency,
 			transaction.Currency)
 	}
-
+	newTransaction := &models.Transaction{
+		Type:        transaction.Type,
+		Currency:    transaction.Currency,
+		Amount:      transaction.Amount,
+		ThisAccount: transaction.ThisAccount,
+	}
 	switch transaction.Type {
 	case models.Deposit:
 		if err = s.accountSrc.UpdateAccountAmount(account.ID, decimal.Sum(account.Amount, transaction.Amount)); err != nil {
@@ -59,7 +64,7 @@ func (s *TransactionSrc) CreateTransaction(transaction models.TransactionRequest
 			return fmt.Errorf("cannot withdraw from account:%w", err)
 		}
 	case models.Transfer:
-		receiverAccount, err := s.accountSrc.GetAccountByID(transaction.ThisAccount)
+		receiverAccount, err := s.accountSrc.GetAccountByID(transaction.ReceiverAccount)
 		if err != nil {
 			return err
 		}
@@ -78,9 +83,11 @@ func (s *TransactionSrc) CreateTransaction(transaction models.TransactionRequest
 		if err = s.accountSrc.UpdateAccountAmount(receiverAccount.ID, decimal.Sum(receiverAccount.Amount, transaction.Amount)); err != nil {
 			return fmt.Errorf("cannot transfer to account:%w", err)
 		}
+		newTransaction.ReceiverAccount = transaction.ReceiverAccount
 	default:
 		return fmt.Errorf("unavailable operation: %w", transaction.Type)
 	}
+	s.repository.CreateTransaction(newTransaction)
 	return nil
 }
 

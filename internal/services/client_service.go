@@ -24,7 +24,7 @@ func NewClientSrc(repo repositories.ClientRepository) ClientService {
 
 func (s *ClientSrc) CreateClient(client models.ClientRequest) error {
 	if s.repository.IsClientExists(client.Email) {
-		return fmt.Errorf("cannot create user with email: %w", client.Email)
+		return fmt.Errorf("cannot create user with email: %v", client.Email)
 	}
 	s.repository.CreateClient(&models.Client{
 		Email:    client.Email,

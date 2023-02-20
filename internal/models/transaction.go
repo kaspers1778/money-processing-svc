@@ -18,14 +18,14 @@ type Transaction struct {
 	Type            TransactionType `sql:"type:ENUM('Deposit', 'Withdrawal', 'Transfer')" gorm:"column:transaction_type"`
 	Currency        Currency        `sql:"type:ENUM('USD', 'COP', 'MXN')" gorm:"column:currency_type"`
 	Amount          decimal.Decimal `gorm:"type:decimal(10,2);"`
-	ThisAccount     Account         `gorm:"foreignKey:ID"`
-	ReceiverAccount Account         `gorm:"foreignKey:ID"`
+	ThisAccount     uint
+	ReceiverAccount uint
 }
 
 type TransactionRequest struct {
 	Type            TransactionType `json:"type" binding:"required"`
 	Currency        Currency        `json:"currency" binding:"required"`
-	Amount          decimal.Decimal `json:"amount" binding:"required,decimal(10,2)"`
-	ThisAccount     uint            `json:"account" binding:"required"`
-	ReceiverAccount uint            `json:"receiver_account" `
+	Amount          decimal.Decimal `json:"amount" binding:"required"`
+	ThisAccount     uint            `json:"this-account" binding:"required"`
+	ReceiverAccount uint            `json:"receiver-account"`
 }

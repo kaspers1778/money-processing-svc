@@ -17,11 +17,7 @@ var DSN = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=dis
 	os.Getenv("DB_NAME"),
 	os.Getenv("DB_PORT"))
 
-type DBInstance struct {
-	DB *gorm.DB
-}
-
-func ConnectDB() DBInstance {
+func ConnectDB() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(DSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -34,7 +30,7 @@ func ConnectDB() DBInstance {
 	if err != nil {
 		log.Fatal("Fail to perform migration: ", err)
 	}
-	return DBInstance{db}
+	return db
 }
 
 func InitialMigration(db *gorm.DB) (err error) {

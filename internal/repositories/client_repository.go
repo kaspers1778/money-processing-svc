@@ -27,20 +27,22 @@ func (r *ClientRepo) CreateClient(client *models.Client) {
 
 func (r *ClientRepo) GetClients(params map[string]interface{}) []*models.Client {
 	var clients []*models.Client
-	r.InstanceDB.Where(params).Find(&clients)
+	r.InstanceDB.Preload("Accounts").Where(params).Find(&clients)
 	return clients
 }
 
 func (r *ClientRepo) GetClientByEmail(email string) (*models.Client, error) {
 	var client *models.Client
-	if err := r.InstanceDB.Preload("accounts").Where("email = ?", email).First(&client).Error; err != nil {
+	if err := r.InstanceDB.Preload("Accounts").Where("email = ?", email).First(&client).Error; err != nil {
 		return nil, fmt.Errorf("cannot find client by email: %w", err)
 	}
 	return client, nil
 }
 
 func (r *ClientRepo) IsClientExists(email string) bool {
-	if err := r.InstanceDB.Where("email = ?", email).Error; err != nil {
+	var client models.Client
+	err := r.InstanceDB.Where("email = ?", email).First(&client).Error
+	if err != nil {
 		return false
 	}
 	return true

@@ -25,7 +25,7 @@ func (r *TransactionRepo) CreateTransaction(transaction *models.Transaction) {
 
 func (r *TransactionRepo) GetTransactionByAccount(accountID uint) ([]models.Transaction, error) {
 	var transactions []models.Transaction
-	if err := r.InstanceDB.Where("account = ?", accountID).Find(&transactions).Error; err != nil {
+	if err := r.InstanceDB.Where("this_account = ?", accountID).Find(&transactions).Error; err != nil {
 		return nil, fmt.Errorf("cannot find transacctions by account:%w", err)
 	}
 	return transactions, nil

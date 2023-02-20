@@ -22,12 +22,8 @@ func (cc *ClientController) GetClients(c *gin.Context) {
 }
 
 func (cc *ClientController) GetClientByEmail(c *gin.Context) {
-	var input models.ClientRequest
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	client, err := cc.Service.GetClientByEmail(input)
+	input := c.Param("email")
+	client, err := cc.Service.GetClientByEmail(models.ClientRequest{Email: input})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
