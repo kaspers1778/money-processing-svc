@@ -21,3 +21,11 @@ type Transaction struct {
 	ThisAccount     Account         `gorm:"foreignKey:ID"`
 	ReceiverAccount Account         `gorm:"foreignKey:ID"`
 }
+
+type TransactionRequest struct {
+	Type            TransactionType `json:"type" binding:"required"`
+	Currency        Currency        `json:"currency" binding:"required"`
+	Amount          decimal.Decimal `json:"amount" binding:"required,decimal(10,2)"`
+	ThisAccount     uint            `json:"account" binding:"required"`
+	ReceiverAccount uint            `json:"receiver_account" `
+}

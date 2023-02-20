@@ -9,6 +9,7 @@ import (
 type ClientRepository interface {
 	CreateClient(client *models.Client)
 	GetClientByEmail(email string) (*models.Client, error)
+	GetClients(params map[string]interface{}) []*models.Client
 	IsClientExists(email string) bool
 }
 
@@ -22,6 +23,12 @@ func NewClientRepo(instanceDB *gorm.DB) ClientRepository {
 
 func (r *ClientRepo) CreateClient(client *models.Client) {
 	r.InstanceDB.Create(client)
+}
+
+func (r *ClientRepo) GetClients(params map[string]interface{}) []*models.Client {
+	var clients []*models.Client
+	r.InstanceDB.Where(params).Find(&clients)
+	return clients
 }
 
 func (r *ClientRepo) GetClientByEmail(email string) (*models.Client, error) {

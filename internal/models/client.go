@@ -7,3 +7,7 @@ type Client struct {
 	Email    string    `json:"email" gorm:"uniqueIndex"`
 	Accounts []Account `gorm:"foreignKey:Owner"`
 }
+
+type ClientRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}

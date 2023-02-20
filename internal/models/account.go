@@ -19,3 +19,9 @@ type Account struct {
 	Currency Currency        `sql:"type:ENUM('USD', 'COP', 'MXN')" gorm:"column:currency_type"`
 	Amount   decimal.Decimal `gorm:"type:decimal(10,2);"`
 }
+
+type AccountRequest struct {
+	Owner    uint            `json:"owner" binding:"required"`
+	Currency Currency        `json:"currency" binding:"required"`
+	Amount   decimal.Decimal `json:"amount" binding:"required,decimal(10,2)"`
+}
